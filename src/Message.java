@@ -35,10 +35,19 @@ public class Message implements Serializable
 		this.msgType = type;
 	}
 
-	// constructor
-	public Message() 
-	{ 
+	public Message() {
 		
+	}
+	
+	// constructor
+	public Message(int msgType) 
+	{ 
+		this.msgType = msgType;
 	} 
 	
+	public Message(int msgType, BattleShipTable FTable) {
+		this.Ftable = FTable;
+		this.Ptable = new BattleShipTable();
+		this.msgType = msgType;
+	}
 } 
