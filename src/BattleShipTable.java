@@ -1,5 +1,4 @@
 import java.io.Serializable;
-
 public class BattleShipTable implements Serializable
 { 
 	/* Constants*/
@@ -27,14 +26,12 @@ public class BattleShipTable implements Serializable
 	static final String DEFAULT_SYMBOL = "Z";
 	
 	String [][]table = null;
-	/* Valid values in the table*/
 
-	
 
-	// constructor with port 
+	// constructor 
 	public BattleShipTable() 
 	{ 
-		System.out.println("Creating Table...");
+		System.out.println("create table");
 		this.table = new String[10][10];
 		//set default values
 		for(int i=0;i<10;++i){
@@ -48,7 +45,7 @@ public class BattleShipTable implements Serializable
 		//get the alpha part
 		int []ret = new int[2];
 		ret[0] = this.helperAlphaToX(alpha_coordinates.charAt(0));
-		//get the number part
+		//get the numeric part
 		ret[1] = Integer.parseInt(alpha_coordinates.substring(1));
 		return ret;
 	}
@@ -86,7 +83,6 @@ public class BattleShipTable implements Serializable
 	
 	public boolean insertAirCarrier(String x1, String x2){
 		//check if it can be inserted
-		//5 squares
 		if(this.insertShip(x1, x2, BattleShipTable.AIRCRAFT_CARRIER_SIZE, "A"))
 			return true;
 		else
@@ -100,19 +96,8 @@ public class BattleShipTable implements Serializable
 		else
 			return false;
 	}
-	/*
-	public boolean insertBattleship(String x1, String x2){
-		//check if it can be inserted
-		//4 squares
-		if(this.insertShip(x1, x2, 4, "B"))
-			return true;
-		else
-			return false;
-	}*/
+
 	private boolean insertShip(String x1, String x2, int len, String s){
-		//check if it can be inserted
-		//4 squares
-		//check if the two coordinates are valid
 		int []xy1 = this.AlphaNumerictoXY(x1);
 		int []xy2 = this.AlphaNumerictoXY(x2);
 		if(!(xy1[0]>=0 && xy1[0]<=9 && xy1[1]>=0 && xy1[1]<=9)) return false;
@@ -137,7 +122,7 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private boolean insertSinglePoint(int[] xy, String s){
-		if(this.table[xy[0]][xy[1]] == "Z"){
+		if(this.table[xy[0]][xy[1]].equals("Z")){
 			this.table[xy[0]][xy[1]] = s;
 			return true;
 		}else
@@ -145,9 +130,9 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private boolean checkAlongXAxis(int[] xy, int len){
-		if(xy[1]+len > 9) return false;
+		if(xy[1]+len > 10) return false;
 		for(int j=xy[1];j<xy[1]+len;++j){
-			if(this.table[xy[0]][j] != "Z")
+			if(!this.table[xy[0]][j].equals("Z"))
 				return false;
 		}
 		return true;
@@ -160,9 +145,9 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private boolean checkAlongYAxis(int[] xy, int len){
-		if(xy[0]+len > 9) return false;
+		if(xy[0]+len > 10) return false;
 		for(int i=xy[0];i<xy[0]+len;++i){
-			if(this.table[i][xy[1]] != "Z")
+			if(!this.table[i][xy[1]].equals("Z"))
 				return false;
 		}
 		return true;
@@ -172,5 +157,21 @@ public class BattleShipTable implements Serializable
 		for(int i=xy[0];i<xy[0]+len;++i){
 			this.table[i][xy[1]] = s;				
 		}		
-	}
+	}	
+	
+	public static void main(String args[]) 
+	{ 
+		BattleShipTable t = new BattleShipTable();		
+		t.insertAirCarrier("C5","C6");
+		System.out.println(t.toString());
+		if(!t.insertDestroyer("H9", "I9")){
+			System.out.println("not able to insert");
+		}
+		System.out.println(t.toString());
+		if(!t.insertDestroyer("H9", "I9")){
+			System.out.println("not able to insert");
+		}
+		System.out.println(t.toString());
+		
+	} 
 } 

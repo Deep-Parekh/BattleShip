@@ -13,7 +13,6 @@ public class Client {
 		Socket client;
 		BufferedReader userInput;
 		BattleShipTable playerBoard;
-		Message serverMessages = new Message();
 		ObjectOutputStream outToServer;
 		ObjectInputStream inFromServer ;
 		
@@ -23,23 +22,14 @@ public class Client {
 			outToServer = new ObjectOutputStream(client.getOutputStream());
 			inFromServer = new ObjectInputStream(client.getInputStream());
 			Message srvMsg = (Message) inFromServer.readObject();
-			if (srvMsg.getMsgType() == serverMessages.MSG_REQUEST_INIT);{
+			if (srvMsg.getMsgType() == Message.MSG_REQUEST_INIT);{
 				System.out.println("Received message from Server");
 				playerBoard = new BattleShipTable();
 				System.out.println(playerBoard);
 				System.out.println("Set up your board");
-				String[] input;
-				for ( int i = 0; i< 2; ++i) {
-					promptForAircraft();
-					input = userInput.readLine().split(" ");
-					playerBoard.insertAirCarrier(input[0], input[1]);
-					promptForDestroyer();
-					input = userInput.readLine().split(" ");
-					playerBoard.insertDestroyer(input[0], input[1]);
-					promptForSubmarine();
-					playerBoard.insertSubmarine(userInput.readLine());
-				}
+				setUpBoard(userInput, playerBoard);
 				outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT, playerBoard));
+				System.out.println(inFromServer.read());
 			}
 				
 		}catch(IOException e) {
@@ -59,5 +49,19 @@ public class Client {
 	
 	public static void promptForSubmarine() {
 		System.out.println("Enter one coordinate for Submarine (Example: A1): ");
+	}
+	
+	public static void setUpBoard(BufferedReader userInput, BattleShipTable board) throws IOException{
+		String[] input;
+		for ( int i = 0; i< 2; ++i) {
+			promptForAircraft();
+			input = userInput.readLine().split(" ");
+			board.insertAirCarrier(input[0], input[1]);
+			promptForDestroyer();
+			input = userInput.readLine().split(" ");
+			board.insertDestroyer(input[0], input[1]);
+			promptForSubmarine();
+			board.insertSubmarine(userInput.readLine());
+		}
 	}
 }
