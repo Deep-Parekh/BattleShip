@@ -58,9 +58,6 @@ public class Game implements Runnable{
 		this.player2 = player2;
 	}
 	
-	public void run() {
-		
-	}
 	public void setUpPlayer(ObjectOutputStream to, ObjectInputStream from){
 		try {
 			sendRequest(to, Message.MSG_REQUEST_INIT);
@@ -84,4 +81,7 @@ public class Game implements Runnable{
 			System.out.println("Received Request from Player "); 		// Which player (specify)
 	}
 
+	public void run() {
+		
+	}
 }
