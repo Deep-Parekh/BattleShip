@@ -12,7 +12,7 @@ public class Message implements Serializable
 	
 	private int msgType=-1;
 	private String msg = null;
-	private int [] blockBomb = new int[2]; //x, y coordinates of the block on the opponent's board to be bombed; this is for the MSG_RESPONSE_PLAY message
+	int [] blockBomb = new int[2]; //x, y coordinates of the block on the opponent's board to be bombed; this is for the MSG_RESPONSE_PLAY message
 	
 	
 	public BattleShipTable Ftable = null;//the player's own board (F-board)
@@ -45,9 +45,12 @@ public class Message implements Serializable
 		this.msgType = msgType;
 	} 
 	
+	public Message(String msg) {
+		this.msg = msg;
+	}
+	
 	public Message(int msgType, BattleShipTable FTable) {
 		this.Ftable = FTable;
-		this.Ptable = new BattleShipTable();
 		this.msgType = msgType;
 	}
 } 

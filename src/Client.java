@@ -9,33 +9,45 @@ public class Client {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Socket client;
+		Socket server;
 		BufferedReader userInput;
 		BattleShipTable playerBoard;
 		ObjectOutputStream outToServer;
 		ObjectInputStream inFromServer ;
 		
 		try {
-			client = new Socket("localhost", 5000);
-			userInput = new BufferedReader(new InputStreamReader(System.in));
-			outToServer = new ObjectOutputStream(client.getOutputStream());
-			inFromServer = new ObjectInputStream(client.getInputStream());
+			server = new Socket("localhost", 5000);
+			inFromServer = new ObjectInputStream(server.getInputStream());		// Order should be opposite of
+			outToServer = new ObjectOutputStream(server.getOutputStream());		// that on the server
 			Message srvMsg = (Message) inFromServer.readObject();
 			if (srvMsg.getMsgType() == Message.MSG_REQUEST_INIT);{
 				System.out.println("Received message from Server");
 				playerBoard = new BattleShipTable();
 				System.out.println(playerBoard);
 				System.out.println("Set up your board");
+				userInput = new BufferedReader(new InputStreamReader(System.in));
 				setUpBoard(userInput, playerBoard);
-				outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT, playerBoard));
-				System.out.println(inFromServer.read());
+				outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT));
+				outToServer.writeObject(playerBoard);
 			}
+			System.out.println(playerBoard);
+			srvMsg = (Message) inFromServer.readObject();
+			System.out.println("From server: " + srvMsg.getMsg());
+			while(true) {
 				
+			}
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
 		}catch (ClassNotFoundException e) {
-			System.out.print(e.getMessage());
+			System.out.println(e.getMessage());
 		}
+		catch (NumberFormatException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void promptForHit() {
+		System.out.println("Enter coordinates of your bomb (Example: A0): ");
 	}
 
 	public static void promptForAircraft() {
