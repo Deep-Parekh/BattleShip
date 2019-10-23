@@ -31,7 +31,6 @@ public class BattleShipTable implements Serializable
 	// constructor 
 	public BattleShipTable() 
 	{ 
-		System.out.println("create table");
 		this.table = new String[10][10];
 		//set default values
 		for(int i=0;i<10;++i){
@@ -40,8 +39,13 @@ public class BattleShipTable implements Serializable
 			}		
 		}		
 	} 
+	
+	public BattleShipTable(String[][] table) {
+		this.table = table;
+	}
+	
 	/*convert alpha_numeric to the X and Y coordinates*/
-	private int[] AlphaNumerictoXY(String alpha_coordinates) throws NumberFormatException{
+	public int[] AlphaNumerictoXY(String alpha_coordinates) throws NumberFormatException{
 		//get the alpha part
 		int []ret = new int[2];
 		ret[0] = this.helperAlphaToX(alpha_coordinates.charAt(0));

@@ -12,10 +12,10 @@ public class Game implements Runnable {
 	int gameStatus;
 
 	Player player1 = null;
-	BattleShipTable player1Board = null;
+	BattleShipTable player2GuessBoard = null;		
 
 	Player player2 = null;
-	BattleShipTable player2Board = null;
+	BattleShipTable player1GuessBoard = null;
 	
 	boolean turn = true;		// If true that means its player 1's turn else payer 2's turn
 	
@@ -23,16 +23,24 @@ public class Game implements Runnable {
 		player1 = new Player(client);
 	}
 	
+	public Game(Socket player1, Socket player2) {
+		this.player1 = new Player(player1);
+		this.player2 = new Player(player1);
+	}
+	
 	public void addPlayer(Socket client) {
 		player2 = new Player(client);
+		gameStatus = IN_PROGRESS;
 	}
 	
 	public void setUpPlayer(Player player) {
 		try {
 			player.sendMessage(new Message(Message.MSG_REQUEST_INIT));
 			Message playerMsg = (Message) player.receiveMessage();
-			if (playerMsg.getMsgType() == Message.MSG_RESPONSE_INIT)
+			if (playerMsg.getMsgType() == Message.MSG_RESPONSE_INIT) {
 				System.out.println("Received Response" + Message.MSG_RESPONSE_INIT + " from Player "); 
+				player.board = playerMsg.Ftable;
+			}
 			if (player2 == null)
 				player.sendMessage(new Message("Waiting for player 2 to join..."));
 		}catch(IOException e) {
@@ -44,38 +52,61 @@ public class Game implements Runnable {
 		try {
 			while(gameStatus != ENDED) {
 				if (turn == true) {
-					turn(player1, player2Board);
+					player2.sendMessage(new Message("Waiting for opponent to play..."));
+					turn(player1, player1GuessBoard, player2GuessBoard);
 				}else {
-					turn(player2, player1Board);	
+					player1.sendMessage(new Message("Waiting for opponent to play..."));
+					turn(player2, player2GuessBoard, player1GuessBoard);	
 				}
+				turn = (!turn);
 			}
 		} catch (Exception e){
 			
 		}
 	}
 	
-	public void turn(Player player, BattleShipTable board) throws IOException{
+	public void turn(Player player, BattleShipTable board, BattleShipTable hits) throws IOException{
 		player.sendMessage(new Message(Message.MSG_REQUEST_PLAY));
 		player.receiveMessage();					
 		Message hit = (Message) player.receiveMessage();
 		int[] bomb = hit.blockBomb;
-		if (player.getBoard().table[bomb[0]][bomb[1]] == "Z")
+		if (player.getBoard().table[bomb[0]][bomb[1]] == "Z") {
 			board.table[bomb[0]][bomb[1]] = BattleShipTable.MISS_SYMBOL;
-		else
+			player.sendMessage(new Message("You missed", board, hideShips(player.board, hits)));
+		}
+		else {
 			board.table[bomb[0]][bomb[1]] = BattleShipTable.HIT_SYMBOL;
+			player.sendMessage(new Message("You hit opponent's ship!", board, hideShips(player.board, hits)));
+		}
+	}
+	
+	public BattleShipTable hideShips(BattleShipTable withShips, BattleShipTable withHits) {
+		String[][] returnTable = new String[10][10];
+		for(int i=0;i<10;++i){
+			for(int j=0;j<10;++j){
+				String element = withHits.table[i][j];
+				String shipElement = withShips.table[i][j];
+				if (element == "Z" && shipElement != "Z") {
+					returnTable[i][j] = shipElement;
+				}
+				else 
+					returnTable[i][j] = element;
+			}		
+		}
+		return new BattleShipTable(returnTable);
 	}
 	
 	public void run() {
 		try {
+			System.out.println(Thread.currentThread().getName() + " has started");
 			setUpPlayer(player1);
-			player1Board = new BattleShipTable();		// Used for displaying to player2
+			player2GuessBoard = new BattleShipTable();		// Used for displaying to player2
 			gameStatus = WAITING_FOR_SECOND_PLAYER;
-			while (player2 == null) {
-				// this needs to be changed so that this thread will 
-				// get alerted when player 2 joins the game 
+			while (gameStatus == WAITING_FOR_SECOND_PLAYER) {
+				
 			}
 			setUpPlayer(player2);
-			player2Board = new BattleShipTable();		// Used for displaying to player1
+			player1GuessBoard = new BattleShipTable();		// Used for displaying to player1
 			while (gameStatus != ENDED) {
 				playGame();
 			}

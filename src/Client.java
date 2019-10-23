@@ -27,15 +27,31 @@ public class Client {
 				System.out.println("Set up your board");
 				userInput = new BufferedReader(new InputStreamReader(System.in));
 				setUpBoard(userInput, playerBoard);
-				outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT));
-				outToServer.writeObject(playerBoard);
+				outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT, playerBoard));
 			}
 			System.out.println(playerBoard);
 			srvMsg = (Message) inFromServer.readObject();
 			System.out.println("From server: " + srvMsg.getMsg());
-			while(true) {
-				
+			srvMsg = (Message) inFromServer.readObject();
+			while(srvMsg.getMsgType() != Message.MSG_REQUEST_GAME_OVER) {
+				String prompt = srvMsg.getMsg();
+				if (prompt != null) {
+					System.out.println(prompt);
+					continue;
+				}
+				promptForHit();
+				String input = userInput.readLine();
+				Message hit = new Message(playerBoard.AlphaNumerictoXY(input));
+				outToServer.writeObject(hit);
+				srvMsg = (Message) inFromServer.readObject();
+				System.out.println(srvMsg.getMsg());
+				System.out.println("Your board: ");
+				System.out.println(srvMsg.Ptable);
+				System.out.println("Your guess board: ");
+				System.out.println(srvMsg.Ftable);
+				srvMsg = (Message) inFromServer.readObject();
 			}
+			System.out.println(srvMsg.getMsg());
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
 		}catch (ClassNotFoundException e) {

@@ -18,6 +18,43 @@ public class Message implements Serializable
 	public BattleShipTable Ftable = null;//the player's own board (F-board)
 	public BattleShipTable Ptable = null;//the player hits and misses on the opponent board (P-board)
 	
+	// constructor
+	public Message() {
+		
+	}
+	public Message(int msgType) 
+	{ 
+		this.msgType = msgType;
+	} 
+	
+	public Message(String msg) {
+		this.msg = msg;
+	}
+	
+	public Message(BattleShipTable opTable) {
+		Ptable = opTable;
+	}
+	
+	public Message(int msgType, BattleShipTable FTable) {
+		this.Ftable = FTable;
+		this.msgType = msgType;
+	}
+	
+	public Message(String msg, BattleShipTable FTable) {
+		this.msg = msg;
+		this.Ftable = FTable;
+	}
+	
+	public Message(String msg, BattleShipTable FTable, BattleShipTable PTable) {
+		this.msg = msg;
+		this.Ftable = FTable;
+		this.Ptable = PTable;
+	}
+	
+	public Message(int[] bomb) {
+		this.blockBomb = bomb;
+	}
+	
 	//getters
 	public String getMsg(){
 		return this.msg;
@@ -33,24 +70,5 @@ public class Message implements Serializable
 	
 	public void setMsgType(int type){
 		this.msgType = type;
-	}
-
-	public Message() {
-		
-	}
-	
-	// constructor
-	public Message(int msgType) 
-	{ 
-		this.msgType = msgType;
-	} 
-	
-	public Message(String msg) {
-		this.msg = msg;
-	}
-	
-	public Message(int msgType, BattleShipTable FTable) {
-		this.Ftable = FTable;
-		this.msgType = msgType;
 	}
 } 
