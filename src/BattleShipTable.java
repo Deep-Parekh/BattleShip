@@ -1,4 +1,5 @@
 import java.io.Serializable;
+
 public class BattleShipTable implements Serializable
 { 
 	/* Constants*/
@@ -162,6 +163,19 @@ public class BattleShipTable implements Serializable
 			this.table[i][xy[1]] = s;				
 		}		
 	}	
+	
+	public BattleShipTable encrypt() {
+		String[][] encryptedBoard = new String[10][10];
+		for(int i=0;i<10;++i){
+			for(int j=0;j<10;++j){
+				if (this.table[i][j].equals("A") || this.table[i][j].equals("D")|| this.table[i][j].equals("S"))
+					encryptedBoard[i][j] ="Z";
+				else
+					encryptedBoard[i][j] = this.table[i][j];
+			}		
+		}
+		return new BattleShipTable(encryptedBoard);
+	}
 	
 	public static void main(String args[]) 
 	{ 

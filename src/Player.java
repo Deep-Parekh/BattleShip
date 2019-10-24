@@ -22,8 +22,8 @@ public class Player {
 	}
 	
 	// Sets the current players game board
-	public void setBoard() {
-		
+	public void setBoard(BattleShipTable board) {
+		this.board = board;
 	}
 	
 	public BattleShipTable getBoard() {

@@ -15,6 +15,7 @@ public class Client {
 		ObjectOutputStream outToServer;
 		ObjectInputStream inFromServer ;
 		
+		// Refactor this block to smaller more manageable chunks
 		try {
 			server = new Socket("localhost", 5000);
 			inFromServer = new ObjectInputStream(server.getInputStream());		// Order should be opposite of
@@ -37,6 +38,8 @@ public class Client {
 				String prompt = srvMsg.getMsg();
 				if (prompt != null) {
 					System.out.println(prompt);
+					Thread.currentThread().sleep(2000);
+					srvMsg = (Message) inFromServer.readObject();
 					continue;
 				}
 				promptForHit();
@@ -46,18 +49,19 @@ public class Client {
 				srvMsg = (Message) inFromServer.readObject();
 				System.out.println(srvMsg.getMsg());
 				System.out.println("Your board: ");
-				System.out.println(srvMsg.Ptable);
-				System.out.println("Your guess board: ");
 				System.out.println(srvMsg.Ftable);
+				System.out.println("Your guess board: ");
+				System.out.println(srvMsg.Ptable);
 				srvMsg = (Message) inFromServer.readObject();
 			}
 			System.out.println(srvMsg.getMsg());
-		}catch(IOException e) {
+		}catch (IOException e) {
 			System.out.println(e.getMessage());
 		}catch (ClassNotFoundException e) {
 			System.out.println(e.getMessage());
-		}
-		catch (NumberFormatException e){
+		}catch (NumberFormatException e){
+			System.out.println(e.getMessage());
+		}catch (InterruptedException e) {
 			System.out.println(e.getMessage());
 		}
 	}

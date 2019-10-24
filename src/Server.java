@@ -1,15 +1,10 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
-import java.util.LinkedList;
 
 public class Server {
 	
-	static int players = 0;
-	static LinkedList<Game> games = null;
+	static int games = 0;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -18,16 +13,19 @@ public class Server {
 		try {
 
 			socket = new ServerSocket(5000);
-			games = new LinkedList<Game>();
 			
 			while(true) {
-				System.out.println("There are " + players + " players online.");
+				if (games == 1)
+					System.out.println("There is 1 game on");
+				else
+					System.out.println("There are " + games + " games going on");
 				Socket client = socket.accept();
-				Game game = new Game(client, socket.accept());
-				games.add(game);
+				Game game = new Game(client);
+				Socket secondClient = socket.accept();
+				game.addPlayer(secondClient);
 				Thread t = new Thread(game);
 				t.start();
-				players+=2;
+				++games;
 			}
 		}catch(IOException e) {
 			System.out.println(e.getMessage());

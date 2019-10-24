@@ -31,6 +31,11 @@ public class Message implements Serializable
 		this.msg = msg;
 	}
 	
+	public Message(String msg, int msgType) {
+		this.msg = msg;
+		this.msgType = msgType;
+	}
+	
 	public Message(BattleShipTable opTable) {
 		Ptable = opTable;
 	}
