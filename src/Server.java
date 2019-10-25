@@ -5,6 +5,7 @@ import java.net.Socket;
 public class Server {
 	
 	static int games = 0;
+	static int players = 0;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

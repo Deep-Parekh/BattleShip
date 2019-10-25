@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.HashSet;
 
 public class BattleShipTable implements Serializable
 { 
@@ -28,6 +29,12 @@ public class BattleShipTable implements Serializable
 	
 	String [][]table = null;
 
+	HashSet<int[]> aircraftCoordinates1 = new HashSet<int[]>();
+	HashSet<int[]> aircraftCoordinates2 = new HashSet<int[]>();
+	HashSet<int[]> destroyerCoordinates1 = new HashSet<int[]>();
+	HashSet<int[]> destroyerCoordinates2 = new HashSet<int[]>();
+	HashSet<int[]> submarineCoordinates1 = new HashSet<int[]>();
+	HashSet<int[]> submarineCoordinates2 = new HashSet<int[]>();
 
 	// constructor 
 	public BattleShipTable() 
@@ -80,8 +87,13 @@ public class BattleShipTable implements Serializable
 	}
 	public boolean insertSubmarine(String x1){
 		//check if it can be inserted
-		if(this.insertSinglePoint(this.AlphaNumerictoXY(x1), "S"))
+		if(this.insertSinglePoint(this.AlphaNumerictoXY(x1), "S")) {
+			if (this.submarineCoordinates1.size() == 0)
+				this.submarineCoordinates1.add(this.AlphaNumerictoXY(x1));
+			else
+				this.submarineCoordinates2.add(this.AlphaNumerictoXY(x1));
 			return true;
+		}
 		else
 			return false;
 	}	
