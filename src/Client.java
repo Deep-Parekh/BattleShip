@@ -84,15 +84,27 @@ public class Client {
 	
 	public static void setUpBoard(BufferedReader userInput, BattleShipTable board) throws IOException{
 		String[] input;
+		// Add error detection and resending prompt if user enters wrong coords
 		for ( int i = 0; i< 2; ++i) {
 			promptForAircraft();
 			input = userInput.readLine().split(" ");
-			board.insertAirCarrier(input[0], input[1]);
+			while (!board.insertAirCarrier(input[0], input[1])) {
+				System.out.println("There was an error, please try again");
+				promptForAircraft();
+				input = userInput.readLine().split(" ");
+			}
 			promptForDestroyer();
 			input = userInput.readLine().split(" ");
-			board.insertDestroyer(input[0], input[1]);
+			while (!board.insertDestroyer(input[0], input[1])) {
+				System.out.println("There was an error, please try again");
+				promptForAircraft();
+				input = userInput.readLine().split(" ");
+			}
 			promptForSubmarine();
-			board.insertSubmarine(userInput.readLine());
+			while (!board.insertSubmarine(userInput.readLine())) {
+				System.out.println("There was an error, please try again");
+				promptForSubmarine();
+			}
 		}
 	}
 }

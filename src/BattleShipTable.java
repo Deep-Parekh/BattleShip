@@ -156,7 +156,21 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private void insertAlongXAxis(int[] xy, int len, String s){
+		HashSet<int[]> toAdd;
+		if (len == BattleShipTable.AIRCRAFT_CARRIER_SIZE) {
+			if (this.aircraftCoordinates1.size() == 0)
+				toAdd = this.aircraftCoordinates1;
+			else
+				toAdd = this.aircraftCoordinates2;
+		}else{
+			if (this.destroyerCoordinates1.size() == 0)
+				toAdd = this.destroyerCoordinates1;
+			else
+				toAdd = this.destroyerCoordinates2;
+		}
 		for(int j=xy[1];j<xy[1]+len;++j){
+			int[] coords = new int[]{xy[0], j};
+			toAdd.add(coords);
 			this.table[xy[0]][j] = s;
 		}
 	}
@@ -171,7 +185,21 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private void insertAlongYAxis(int[] xy, int len, String s){
+		HashSet<int[]> toAdd;
+		if (len == BattleShipTable.AIRCRAFT_CARRIER_SIZE) {
+			if (this.aircraftCoordinates1.size() == 0)
+				toAdd = this.aircraftCoordinates1;
+			else
+				toAdd = this.aircraftCoordinates2;
+		}else{
+			if (this.destroyerCoordinates1.size() == 0)
+				toAdd = this.destroyerCoordinates1;
+			else
+				toAdd = this.destroyerCoordinates2;
+		}
 		for(int i=xy[0];i<xy[0]+len;++i){
+			int[] coords = new int[]{i, xy[1]};
+			toAdd.add(coords);
 			this.table[i][xy[1]] = s;				
 		}		
 	}	
