@@ -56,6 +56,13 @@ public class Message implements Serializable
 		this.Ptable = PTable;
 	}
 	
+	public Message(int msgType, String msg, BattleShipTable FTable, BattleShipTable PTable) {
+		this.msgType = msgType;
+		this.msg = msg;
+		this.Ftable = FTable;
+		this.Ptable = PTable;
+	}
+	
 	public Message(int[] bomb) {
 		this.blockBomb = bomb;
 	}

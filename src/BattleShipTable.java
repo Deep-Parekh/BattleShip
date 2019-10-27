@@ -1,5 +1,6 @@
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class BattleShipTable implements Serializable
 { 
@@ -29,12 +30,12 @@ public class BattleShipTable implements Serializable
 	
 	String [][]table = null;
 
-	HashSet<int[]> aircraftCoordinates1 = new HashSet<int[]>();
-	HashSet<int[]> aircraftCoordinates2 = new HashSet<int[]>();
-	HashSet<int[]> destroyerCoordinates1 = new HashSet<int[]>();
-	HashSet<int[]> destroyerCoordinates2 = new HashSet<int[]>();
-	HashSet<int[]> submarineCoordinates1 = new HashSet<int[]>();
-	HashSet<int[]> submarineCoordinates2 = new HashSet<int[]>();
+	LinkedList<int[]> aircraftCoordinates1 = new LinkedList<int[]>();
+	LinkedList<int[]> aircraftCoordinates2 = new LinkedList<int[]>();
+	LinkedList<int[]> destroyerCoordinates1 = new LinkedList<int[]>();
+	LinkedList<int[]> destroyerCoordinates2 = new LinkedList<int[]>();
+	LinkedList<int[]> submarineCoordinates1 = new LinkedList<int[]>();
+	LinkedList<int[]> submarineCoordinates2 = new LinkedList<int[]>();
 
 	// constructor 
 	public BattleShipTable() 
@@ -50,6 +51,14 @@ public class BattleShipTable implements Serializable
 	
 	public BattleShipTable(String[][] table) {
 		this.table = table;
+	}
+	
+	public void removeShip(LinkedList<int[]> ship, int[] bomb){
+		for(int[] coords:ship) {
+			if(Arrays.equals(coords,bomb)) {
+				ship.remove(coords);
+			}
+		}
 	}
 	
 	/*convert alpha_numeric to the X and Y coordinates*/
@@ -156,7 +165,7 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private void insertAlongXAxis(int[] xy, int len, String s){
-		HashSet<int[]> toAdd;
+		LinkedList<int[]> toAdd;
 		if (len == BattleShipTable.AIRCRAFT_CARRIER_SIZE) {
 			if (this.aircraftCoordinates1.size() == 0)
 				toAdd = this.aircraftCoordinates1;
@@ -185,7 +194,7 @@ public class BattleShipTable implements Serializable
 	}
 	
 	private void insertAlongYAxis(int[] xy, int len, String s){
-		HashSet<int[]> toAdd;
+		LinkedList<int[]> toAdd;
 		if (len == BattleShipTable.AIRCRAFT_CARRIER_SIZE) {
 			if (this.aircraftCoordinates1.size() == 0)
 				toAdd = this.aircraftCoordinates1;

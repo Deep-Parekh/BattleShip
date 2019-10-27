@@ -73,58 +73,39 @@ public class Game implements Runnable {
 			turnPlayerMsg += "You missed!\n" + waitingPlayer.getRemainingShips();
 			waitingPlayerMsg += "Your opponent missed!\n" + waitingPlayer.getRemainingShips();
 		}else if(board.table[bomb[0]][bomb[1]].equals("S")){
-			board.table[bomb[0]][bomb[1]] = BattleShipTable.HIT_SYMBOL;
-			if (board.submarineCoordinates1.contains(bomb)) 
-				board.submarineCoordinates1.remove(bomb);
-			else 
-				board.submarineCoordinates2.remove(bomb);
+			board.removeShip(board.submarineCoordinates1,bomb);
+			board.removeShip(board.submarineCoordinates2,bomb);
 			turnPlayerMsg += "You destroyed opponent's submarine!\n" + waitingPlayer.getRemainingShips();
 			waitingPlayerMsg += "Opponent destroyed your submarine!\n" + waitingPlayer.getRemainingShips();
 		}else if(board.table[bomb[0]][bomb[1]].equals("D")){
-			board.table[bomb[0]][bomb[1]] = BattleShipTable.HIT_SYMBOL;
-			if (board.destroyerCoordinates1.contains(bomb)) {
-				board.destroyerCoordinates1.remove(bomb);
-				if (board.destroyerCoordinates1.size() == 0) {
-					turnPlayerMsg += "You destroyed opponent's destroyer!\n" + waitingPlayer.getRemainingShips();
-					waitingPlayerMsg += "Opponent destroyed your destroyer!\n" + waitingPlayer.getRemainingShips();
-				}
-				else
-					turnPlayerMsg += "You hit opponent's ship!\n" + turnPlayer.getRemainingShips();
-			}
-			else {
-				board.destroyerCoordinates2.remove(bomb);
-				if (board.destroyerCoordinates2.size() == 0) {
-					turnPlayerMsg +="You destroyed opponent's destroyer!\n" + waitingPlayer.getRemainingShips();
-					waitingPlayerMsg += "Opponent destroyed your destroyer!\n" + waitingPlayer.getRemainingShips();
-				}
-				else
-					turnPlayerMsg += "You hit opponent's ship!\n" + waitingPlayer.getRemainingShips();
+			board.removeShip(board.destroyerCoordinates1,bomb);
+			board.removeShip(board.destroyerCoordinates2,bomb);
+			if (board.destroyerCoordinates1.size() == 0 || board.destroyerCoordinates2.size() == 0) {
+				turnPlayerMsg += "You destroyed opponent's destroyer!\n" + waitingPlayer.getRemainingShips();
+				waitingPlayerMsg += "Opponent destroyed your destroyer!\n" + waitingPlayer.getRemainingShips();
+			}else {
+				turnPlayerMsg += "You hit opponent's ship!\n" + turnPlayer.getRemainingShips();
+				waitingPlayerMsg += "Opponent hit your ship!\n" + turnPlayer.getRemainingShips();
 			}
 		}else if(board.table[bomb[0]][bomb[1]].equals("A")) {
-			board.table[bomb[0]][bomb[1]] = BattleShipTable.HIT_SYMBOL;
-			if (board.aircraftCoordinates1.contains(bomb)) {
-				board.aircraftCoordinates1.remove(bomb);
-				if (board.aircraftCoordinates1.size() == 0) {
-					turnPlayerMsg += "You destroyed opponent's aircraft carrier!\n" + waitingPlayer.getRemainingShips();
-					waitingPlayerMsg += "Opponent destroyed your aircraft carrier!\n" + waitingPlayer.getRemainingShips();
-				}
-				else
-					turnPlayerMsg += "You hit opponent's ship!\n" + turnPlayer.getRemainingShips();
-			}
-			else {
-				board.aircraftCoordinates2.remove(bomb);
-				if (board.aircraftCoordinates2.size() == 0) {
-					turnPlayerMsg +="You destroyed opponent's aircraft carrier!\n" + waitingPlayer.getRemainingShips();
-					waitingPlayerMsg += "Opponent destroyed your aircraft carrier!\n" + waitingPlayer.getRemainingShips();
-				}
-				else
-					turnPlayerMsg += "You hit opponent's ship!\n" + waitingPlayer.getRemainingShips();
+			board.removeShip(board.aircraftCoordinates1,bomb);
+			board.removeShip(board.aircraftCoordinates2,bomb);
+			if (board.aircraftCoordinates1.size() == 0 || board.aircraftCoordinates2.size() == 0) {
+				turnPlayerMsg += "You destroyed opponent's aircraft carrier!\n" + waitingPlayer.getRemainingShips();
+				waitingPlayerMsg += "Opponent destroyed your aircraft carrier!\n" + waitingPlayer.getRemainingShips();
+			}else{
+				turnPlayerMsg += "You hit opponent's ship!\n" + turnPlayer.getRemainingShips();
+				waitingPlayerMsg += "Opponent hit your ship!\n" + turnPlayer.getRemainingShips();
 			}
 		}
 		if (waitingPlayer.remainingShips == 0) {
+			board.table[bomb[0]][bomb[1]] = BattleShipTable.HIT_SYMBOL;
 			turnPlayerMsg += "You destroyed all your opponent's ships,\nCongratulations, you win!";
 			waitingPlayerMsg += "Your opponent destroyed all of your ships,\nYou lose";
+			turnPlayer.sendMessage(new Message(Message.MSG_REQUEST_GAME_OVER, turnPlayerMsg, turnPlayer.getBoard(), board.encrypt()));
+			waitingPlayer.sendMessage(new Message(Message.MSG_REQUEST_GAME_OVER, waitingPlayerMsg, turnPlayer.getBoard(), board.encrypt()));
 		}
+		board.table[bomb[0]][bomb[1]] = BattleShipTable.HIT_SYMBOL;
 		turnPlayer.sendMessage(new Message(turnPlayerMsg, turnPlayer.getBoard(), board.encrypt()));
 		waitingPlayer.sendMessage(new Message(waitingPlayerMsg));
 	}
