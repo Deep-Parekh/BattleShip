@@ -58,7 +58,7 @@ public class BattleShipTable implements Serializable
 			return false;
 		int removeIndex = -1;
 		for ( int i = 0; i < ship.size(); ++i) {
-			if (ship.get(i).equals(bomb)) {
+			if (Arrays.equals(ship.get(i), bomb)) {
 				removeIndex = i;
 				break;
 			}
