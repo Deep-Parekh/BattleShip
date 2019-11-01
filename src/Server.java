@@ -7,6 +7,9 @@ public class Server {
 	static int games = 0;
 	static int players = 0;
 	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ServerSocket socket;
@@ -36,26 +39,3 @@ public class Server {
 		}
 	}
 }
-
-/*
- * Only first player joining works second player does not alert run function in Game
- * 
- * while(true) {
-				if (players == 1)
-					System.out.println("There is 1 player online.");
-				else
-					System.out.println("There are " + players + " players online.");
-				Socket client = socket.accept();
-				if (players % 2 == 1) {
-					Game game = games.peekLast();
-					game.addPlayer(client);
-				}
-				else {
-					Game game = new Game(client);
-					games.add(game);
-					Thread t = new Thread(game);
-					t.start();
-				}
-				++players;
-			}
- */

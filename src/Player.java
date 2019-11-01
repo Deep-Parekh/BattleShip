@@ -9,13 +9,15 @@ public class Player {
 	ObjectOutputStream toPlayer;
 	ObjectInputStream fromPlayer;
 	BattleShipTable board;
+	
 	int remainingShips;
 	
 	public Player(Socket player) {
 		this.player = player;
 		try {
-			toPlayer = new ObjectOutputStream(player.getOutputStream());
-			fromPlayer = new ObjectInputStream(player.getInputStream());
+			this.toPlayer = new ObjectOutputStream(player.getOutputStream());
+			this.fromPlayer = new ObjectInputStream(player.getInputStream());
+			this.remainingShips = 6;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -25,7 +27,6 @@ public class Player {
 	// Sets the current players game board
 	public void setBoard(BattleShipTable board) {
 		this.board = board;
-		this.remainingShips = 6;
 	}
 	
 	public BattleShipTable getBoard() {
@@ -36,17 +37,17 @@ public class Player {
 		toPlayer.writeObject(msg);
 	}
 	
-	public String getRemainingShips() {
+	public String getRemainingShips(BattleShipTable board) {
 		String returnStr = "";
 		int aircraft = 0;
-		if (this.board.aircraftCoordinates1.size() > 0) ++aircraft;
-		if (this.board.aircraftCoordinates2.size() > 0) ++aircraft;
+		if (board.aircraftCoordinates1.size() > 0) ++aircraft;
+		if (board.aircraftCoordinates2.size() > 0) ++aircraft;
 		int destroyer = 0;
-		if (this.board.destroyerCoordinates1.size() > 0) ++destroyer;
-		if (this.board.destroyerCoordinates2.size() > 0) ++destroyer;
+		if (board.destroyerCoordinates1.size() > 0) ++destroyer;
+		if (board.destroyerCoordinates2.size() > 0) ++destroyer;
 		int submarine = 0;
-		if (this.board.submarineCoordinates1.size() > 0) ++submarine;
-		if (this.board.submarineCoordinates2.size() > 0) ++submarine;
+		if (board.submarineCoordinates1.size() > 0) ++submarine;
+		if (board.submarineCoordinates2.size() > 0) ++submarine;
 		remainingShips = destroyer + submarine + aircraft;
 		if (remainingShips == 1)
 			returnStr += "\nRemaining Ship: 1\n";
@@ -60,7 +61,8 @@ public class Player {
 	
 	public Message receiveMessage() {
 		try {
-			return (Message) fromPlayer.readObject();
+			Message from = (Message) fromPlayer.readObject();
+			return from;
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

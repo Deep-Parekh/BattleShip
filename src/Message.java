@@ -9,6 +9,8 @@ public class Message implements Serializable
 	static final int MSG_REQUEST_PLAY = 3; //sent from server to client
 	static final int MSG_RESPONSE_PLAY = 4;//sent from client to server
 	static final int MSG_REQUEST_GAME_OVER = 5; //sent from server to client
+	static final int MSG_YOUR_TURN = 6; //your turn
+	static final int MSG_OPPONENT_TURN = 7; //opponents turn
 	
 	private int msgType=-1;
 	private String msg = null;
@@ -40,27 +42,27 @@ public class Message implements Serializable
 		Ptable = opTable;
 	}
 	
-	public Message(int msgType, BattleShipTable FTable) {
-		this.Ftable = FTable;
+	public Message(int msgType, BattleShipTable PTable) {
+		this.Ptable = PTable;
 		this.msgType = msgType;
 	}
 	
-	public Message(String msg, BattleShipTable FTable) {
+	public Message(String msg, BattleShipTable PTable) {
 		this.msg = msg;
-		this.Ftable = FTable;
-	}
-	
-	public Message(String msg, BattleShipTable FTable, BattleShipTable PTable) {
-		this.msg = msg;
-		this.Ftable = FTable;
 		this.Ptable = PTable;
 	}
 	
-	public Message(int msgType, String msg, BattleShipTable FTable, BattleShipTable PTable) {
+	public Message(String msg, BattleShipTable PTable, BattleShipTable FTable) {
+		this.msg = msg;
+		this.Ptable = PTable;
+		this.Ftable = FTable;
+	}
+	
+	public Message(int msgType, String msg, BattleShipTable PTable, BattleShipTable FTable) {
 		this.msgType = msgType;
 		this.msg = msg;
-		this.Ftable = FTable;
 		this.Ptable = PTable;
+		this.Ftable = FTable;
 	}
 	
 	public Message(int[] bomb) {
@@ -82,5 +84,11 @@ public class Message implements Serializable
 	
 	public void setMsgType(int type){
 		this.msgType = type;
+	}
+	
+	@Override
+	public String toString() {
+		String rtn = this.msgType + "\n" + this.msg + "\n" + this.Ptable + "\n" + this.Ftable;
+		return rtn;
 	}
 } 

@@ -28,7 +28,7 @@ public class BattleShipTable implements Serializable
 	static final String MISS_SYMBOL = "O";
 	static final String DEFAULT_SYMBOL = "Z";
 	
-	String [][]table = null;
+	public String[][] table = null;
 
 	LinkedList<int[]> aircraftCoordinates1 = new LinkedList<int[]>();
 	LinkedList<int[]> aircraftCoordinates2 = new LinkedList<int[]>();
@@ -53,12 +53,20 @@ public class BattleShipTable implements Serializable
 		this.table = table;
 	}
 	
-	public void removeShip(LinkedList<int[]> ship, int[] bomb){
-		for(int[] coords:ship) {
-			if(Arrays.equals(coords,bomb)) {
-				ship.remove(coords);
+	public boolean removeShip(LinkedList<int[]> ship, int[] bomb){
+		if (ship.size() == 0)
+			return false;
+		int removeIndex = -1;
+		for ( int i = 0; i < ship.size(); ++i) {
+			if (ship.get(i).equals(bomb)) {
+				removeIndex = i;
+				break;
 			}
 		}
+		if (removeIndex < 0)
+			return false;
+		ship.remove(removeIndex);
+		return true;
 	}
 	
 	/*convert alpha_numeric to the X and Y coordinates*/
@@ -71,24 +79,29 @@ public class BattleShipTable implements Serializable
 		return ret;
 	}
 	private int helperAlphaToX(char alpha){
-		return (int)alpha - (int)'A';
+		return alpha - 'A';
 	}
 	
 	private String XYToAlphaNumeric(int []xy){
-		return "" + ((char)(xy[0] + (int)'A')) + "" + xy[1];
+		return "" + ((char)(xy[0] + 'A')) + "" + xy[1];
 	}
 	//print out the table
+	@Override
 	public String toString(){
 		String ret = new String();
 		System.out.println("    0   1   2   3   4   5   6   7   8   9  ");
 		for(int i=0;i<10;++i){
-		ret = ret + "" + (char)((int)'A' + i) + " | ";
+			ret = ret + "" + (char)('A' + i) + " | ";
 			for(int j=0;j<10;++j){
-			ret = ret + this.table[i][j] + " | ";
+				ret = ret + this.table[i][j] + " | ";
 			}
 			ret = ret + "\n";
 		}
 		return ret;
+	}
+	
+	public void insert(int[] bomb, String s) {
+		this.table[bomb[0]][bomb[1]] = s;
 	}
 	
 	public void insertHit(String x1, String s){
@@ -217,8 +230,10 @@ public class BattleShipTable implements Serializable
 		String[][] encryptedBoard = new String[10][10];
 		for(int i=0;i<10;++i){
 			for(int j=0;j<10;++j){
-				if (this.table[i][j].equals("A") || this.table[i][j].equals("D")|| this.table[i][j].equals("S"))
-					encryptedBoard[i][j] ="Z";
+				if (this.table[i][j].equals(BattleShipTable.AIRCRAFT_CARRIER_SYMBOL) || 
+						this.table[i][j].equals(BattleShipTable.DESTROYER_SYMBOL)|| 
+						this.table[i][j].equals(BattleShipTable.SUBMARINE_SYMBOL))
+					encryptedBoard[i][j] = BattleShipTable.DEFAULT_SYMBOL;
 				else
 					encryptedBoard[i][j] = this.table[i][j];
 			}		
