@@ -14,10 +14,10 @@ public class Game implements Runnable {
 	int gameStatus;
 
 	Player player1 = null;
-	volatile BattleShipTable player1Board = null;
+	BattleShipTable player1Board = null;
 
 	Player player2 = null;
-	volatile BattleShipTable player2Board = null;
+	BattleShipTable player2Board = null;
 	
 	boolean turn = true;		// If true that means its player 1's turn else payer 2's turn
 	
@@ -116,8 +116,10 @@ public class Game implements Runnable {
 			waitingPlayer.sendMessage(new Message(Message.MSG_REQUEST_GAME_OVER, waitingPlayerMsg, waitingBoard, turnBoard.encrypt()));
 			return;
 		}
-		turnPlayer.sendMessage(new Message(turnPlayerMsg, new BattleShipTable(turnBoard.table), waitingBoard.encrypt())); // Encrypt needs to be added before submitting
-		waitingPlayer.sendMessage(new Message(waitingPlayerMsg, new BattleShipTable(waitingBoard.table), turnBoard.encrypt()));
+		turnPlayer.setBoard(turnBoard);
+		waitingPlayer.setBoard(waitingBoard);
+		turnPlayer.sendMessage(new Message(turnPlayerMsg, turnPlayer.getBoard(), waitingPlayer.getBoard().encrypt())); // Encrypt needs to be added before submitting
+		waitingPlayer.sendMessage(new Message(waitingPlayerMsg, waitingPlayer.getBoard(), turnPlayer.getBoard().encrypt()));
 	}
 	
 	

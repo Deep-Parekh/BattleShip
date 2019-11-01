@@ -15,7 +15,6 @@ public class Client {
 		// TODO Auto-generated method stub
 		Socket server;
 		BufferedReader userInput;
-		BattleShipTable playerBoard;
 		ObjectOutputStream outToServer;
 		ObjectInputStream inFromServer;
 		
@@ -26,14 +25,14 @@ public class Client {
 			outToServer = new ObjectOutputStream(server.getOutputStream());		// that on the server
 			Message srvMsg = (Message) inFromServer.readObject();
 			if (srvMsg.getMsgType() == Message.MSG_REQUEST_INIT);{
-				playerBoard = new BattleShipTable();
+				BattleShipTable playerBoard = new BattleShipTable();
 				System.out.println(playerBoard);
 				System.out.println("Set up your board");
 				userInput = new BufferedReader(new InputStreamReader(System.in));
 				setUpBoard(userInput, playerBoard);
 				System.out.println(playerBoard);
+				outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT, playerBoard));
 			}
-			outToServer.writeObject(new Message(Message.MSG_RESPONSE_INIT, playerBoard));
 			srvMsg = (Message) inFromServer.readObject();
 			while(srvMsg.getMsgType() != Message.MSG_REQUEST_GAME_OVER) {
 				System.out.println(srvMsg.getMsg());
@@ -43,19 +42,24 @@ public class Client {
 					System.out.println(srvMsg.getMsg());
 					System.out.println("Your updated board: ");
 					System.out.println(srvMsg.Ptable);
+					if (srvMsg.getMsgType() == Message.MSG_REQUEST_GAME_OVER)
+						break;
 				}
 				else if (srvMsg.getMsgType() == Message.MSG_YOUR_TURN) {
 					promptForHit();
 					String input = userInput.readLine();
-					int[] bomb = playerBoard.AlphaNumerictoXY(input);
+					BattleShipTable board = new BattleShipTable();
+					int[] bomb = board.AlphaNumerictoXY(input);
 					Message hit = new Message(bomb);
 					outToServer.writeObject(hit);
 					srvMsg = (Message) inFromServer.readObject();
-					System.out.println(srvMsg.getMsg());
 					System.out.println("Your board: ");
 					System.out.println(srvMsg.Ptable);
 					System.out.println("Your guess board: ");
 					System.out.println(srvMsg.Ftable);
+					System.out.println(srvMsg.getMsg());
+					if (srvMsg.getMsgType() == Message.MSG_REQUEST_GAME_OVER)
+						break;
 				}
 				srvMsg = (Message) inFromServer.readObject();
 			}
