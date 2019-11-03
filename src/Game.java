@@ -118,8 +118,8 @@ public class Game implements Runnable {
 		}
 		turnPlayer.setBoard(turnBoard);
 		waitingPlayer.setBoard(waitingBoard);
-		turnPlayer.sendMessage(new Message(turnPlayerMsg, turnPlayer.getBoard(), waitingPlayer.getBoard().encrypt())); // Encrypt needs to be added before submitting
-		waitingPlayer.sendMessage(new Message(waitingPlayerMsg, waitingPlayer.getBoard(), turnPlayer.getBoard().encrypt()));
+		turnPlayer.sendMessage(new Message(turnPlayerMsg, turnPlayer.getBoard(), waitingPlayer.getBoard().encrypt(), bomb)); // Encrypt needs to be added before submitting
+		waitingPlayer.sendMessage(new Message(waitingPlayerMsg, waitingPlayer.getBoard(), turnPlayer.getBoard().encrypt(), bomb));
 	}
 	
 	

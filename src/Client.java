@@ -18,7 +18,6 @@ public class Client {
 		ObjectOutputStream outToServer;
 		ObjectInputStream inFromServer;
 		
-		// Refactor this block to smaller more manageable chunks
 		try {
 			server = new Socket("localhost", 5000);
 			inFromServer = new ObjectInputStream(server.getInputStream());		// Order should be opposite of
@@ -39,9 +38,10 @@ public class Client {
 				if (srvMsg.getMsgType() == Message.MSG_OPPONENT_TURN) {
 					Thread.sleep(2000);
 					srvMsg = (Message) inFromServer.readObject();
+					BattleShipTable updatedTable = updateTable(srvMsg);
 					System.out.println(srvMsg.getMsg());
 					System.out.println("Your updated board: ");
-					System.out.println(srvMsg.Ptable);
+					System.out.println(updatedTable);
 					if (srvMsg.getMsgType() == Message.MSG_REQUEST_GAME_OVER)
 						break;
 				}
@@ -95,6 +95,17 @@ public class Client {
 	
 	public static void promptForSubmarine() {
 		System.out.println("Enter one coordinate for Submarine (Example: A0): ");
+	}
+	
+	public static BattleShipTable updateTable(Message serverMsg) {
+		BattleShipTable rtnTable = serverMsg.Ptable;
+		int[] hit = serverMsg.blockBomb;
+		String coord = rtnTable.table[hit[0]][hit[1]];
+		if (!coord.equals(BattleShipTable.DEFAULT_SYMBOL))
+			rtnTable.table[hit[0]][hit[1]] = BattleShipTable.HIT_SYMBOL;
+		else
+			rtnTable.table[hit[0]][hit[1]] = BattleShipTable.MISS_SYMBOL;
+		return rtnTable;
 	}
 	
 	public static void setUpBoard(BufferedReader userInput, BattleShipTable board) throws IOException{
