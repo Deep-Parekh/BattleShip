@@ -7,9 +7,9 @@ import java.net.Socket;
  */
 public class Game implements Runnable {
 		
-	final int WAITING_FOR_SECOND_PLAYER = 1;
-	final int IN_PROGRESS = 2;
-	final int ENDED = 3;
+	final static int WAITING_FOR_SECOND_PLAYER = 1;
+	final static int IN_PROGRESS = 2;
+	final static int ENDED = 3;
 	
 	int gameStatus;
 
@@ -40,9 +40,6 @@ public class Game implements Runnable {
 		try {
 			player.sendMessage(new Message(Message.MSG_REQUEST_INIT));
 			playerMsg = player.receiveMessage();
-			if (playerMsg.getMsgType() == Message.MSG_RESPONSE_INIT) {
-				System.out.println("Received Response" + Message.MSG_RESPONSE_INIT + " from Player "); 
-			}
 		}catch(IOException e) {
 			System.out.print(e.getMessage());
 		}
@@ -133,7 +130,7 @@ public class Game implements Runnable {
 			player2Board = setUpPlayer(player2);
 			player2.sendMessage(new Message("Player 1 is waiting"));
 			this.gameStatus = IN_PROGRESS;
-			System.out.println("Playing game now");
+			//System.out.println("Playing game now");
 			while(this.gameStatus != ENDED) {
 				playGame();
 			}

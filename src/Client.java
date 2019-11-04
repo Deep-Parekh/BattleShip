@@ -64,12 +64,6 @@ public class Client {
 				srvMsg = (Message) inFromServer.readObject();
 			}
 			
-			// Game over
-			System.out.println("Your board: ");
-			System.out.println(srvMsg.Ftable);
-			System.out.println("Your guess board: ");
-			System.out.println(srvMsg.Ptable);
-			System.out.println(srvMsg.getMsg());
 		}catch (IOException e) {
 			System.out.println(e.getMessage());
 		}catch (ClassNotFoundException e) {
